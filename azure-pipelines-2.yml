@@ -51,7 +51,7 @@ stages:
   - deployment: Deploy
     displayName: Deploy
     pool:
-      vmImage: $(vmImageName)
+      name: pipelineagent
     environment: 'Photonbikesazuredevopsgithubacraksapp1.default'
     strategy:
       runOnce:
