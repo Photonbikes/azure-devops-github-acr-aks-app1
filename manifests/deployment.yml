@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: ekstest 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ekstest
+  template:
+    metadata:
+      labels:
+        app: ekstest 
+    spec:
+      containers:
+        - name: ekstest 
+          image: gurudevopsacr.azurecr.io/ekstest
+          ports:
+          - containerPort: 80
