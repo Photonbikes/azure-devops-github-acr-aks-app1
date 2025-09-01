@@ -16,6 +16,6 @@ spec:
         - name: new 
           image: gurudevopsacr.azurecr.io/new
           ports:
-
           - containerPort: 80
+
 
