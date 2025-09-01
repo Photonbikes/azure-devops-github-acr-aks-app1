@@ -35,6 +35,8 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+    - script: echo "##vso[task.setvariable variable=ImageTag]$(Build.BuildId)"
+      displayName: 'Set ImageTag variable for release pipeline'
     ## Publish Artifacts pipeline code in addition to Build and Push          
     - bash: echo Contents in System Default Working Directory; ls -R $(System.DefaultWorkingDirectory)        
     - bash: echo Before copying Contents in Build Artifact Directory; ls -R $(Build.ArtifactStagingDirectory)        
@@ -56,3 +58,4 @@ stages:
         ArtifactName: 'manifests'
 
         publishLocation: 'Container'
+
