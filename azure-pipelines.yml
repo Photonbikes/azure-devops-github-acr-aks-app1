@@ -18,7 +18,7 @@ stages:
   - job: BuildAndPush
     displayName: 'Build & Push to ACR'
     pool:
-      vmImage: 'ubuntu-latest'
+      name: pipelineagent
     steps:
     - task: Docker@2
       displayName: 'Build Docker Image'
@@ -37,7 +37,7 @@ stages:
   - job: DeployToAKS
     displayName: 'Deploy Kubernetes Resources'
     pool:
-      vmImage: 'ubuntu-latest'
+      name: pipelineagent
     steps:
     - task: KubernetesManifest@1
       displayName: 'Create ACR Pull Secret'
@@ -68,3 +68,4 @@ stages:
         containers: '$(acrLoginServer)/$(imageName):$(imageTag)'
         imagePullSecrets: 'dev-acr'
       continueOnError: true
+
