@@ -11,7 +11,7 @@ resources:
 variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '7ac9a32a-147c-4b2f-b777-1ac5c23b9b5b'
-  imageRepository: 'photonbikesazuredevopsgithubacraksapp'
+  imageRepository: 'new'
   containerRegistry: 'gurudevopsacr.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
@@ -54,4 +54,5 @@ stages:
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'manifests'
+
         publishLocation: 'Container'
