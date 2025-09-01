@@ -2,6 +2,8 @@ apiVersion : apps/v1
 kind: Deployment
 metadata:
   name: new 
+  labels: 
+     app: new
 spec:
   replicas: 1
   selector:
@@ -17,5 +19,6 @@ spec:
           image: gurudevopsacr.azurecr.io/new
           ports:
           - containerPort: 80
+
 
 
