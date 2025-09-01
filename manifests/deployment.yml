@@ -1,7 +1,7 @@
 apiVersion : apps/v1
 kind: Deployment
 metadata:
-  name: ekstest 
+  name: new 
 spec:
   replicas: 1
   selector:
@@ -13,8 +13,9 @@ spec:
         app: new 
     spec:
       containers:
-        - name: ekstest 
+        - name: new 
           image: gurudevopsacr.azurecr.io/new
           ports:
 
           - containerPort: 80
+
