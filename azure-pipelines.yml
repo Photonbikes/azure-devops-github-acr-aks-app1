@@ -4,12 +4,12 @@ trigger:
       - main
 
 variables:
-  imageName: 'new'  # Your ACR repository name
+  imageName: 'new'
   acrLoginServer: 'gurudevopsacr.azurecr.io'
   acrServiceConnection: 'gurudevopsacr-2061'
   kubernetesServiceConnection: 'demo3-k8s-dev-ns'
   namespace: 'dev'
-  imageTag: '$(Build.BuildId)'  # Dynamic tag used across build and deploy
+  imageTag: '$(Build.BuildId)'
 
 stages:
 - stage: Build
@@ -34,38 +34,42 @@ stages:
   displayName: 'Deploy to AKS'
   dependsOn: Build
   jobs:
-  - job: DeployToAKS
+  - deployment: DeployToAKS
     displayName: 'Deploy Kubernetes Resources'
+    environment: 'dev-aks'  # You'll need to create this environment in Azure DevOps
     pool:
       name: pipelineagent
-    steps:
-    - task: KubernetesManifest@1
-      displayName: 'Create ACR Pull Secret'
-      inputs:
-        action: createSecret
-        kubernetesServiceConnection: '$(kubernetesServiceConnection)'
-        namespace: '$(namespace)'
-        secretName: 'dev-acr'
-        dockerRegistryEndpoint: '$(acrServiceConnection)'
-      continueOnError: true
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: KubernetesManifest@1
+            displayName: 'Create ACR Pull Secret'
+            inputs:
+              action: createSecret
+              kubernetesServiceConnection: '$(kubernetesServiceConnection)'
+              namespace: '$(namespace)'
+              secretName: 'dev-acr'
+              dockerRegistryEndpoint: '$(acrServiceConnection)'
+            continueOnError: true
 
-    - task: KubernetesManifest@1
-      displayName: 'Deploy Deployment YAML'
-      inputs:
-        kubernetesServiceConnection: '$(kubernetesServiceConnection)'
-        namespace: '$(namespace)'
-        manifests: 'manifests/deployment.yml'
-        containers: '$(acrLoginServer)/$(imageName):$(imageTag)'
-        imagePullSecrets: 'dev-acr'
-      continueOnError: true
+          - task: KubernetesManifest@1
+            displayName: 'Deploy Deployment YAML'
+            inputs:
+              kubernetesServiceConnection: '$(kubernetesServiceConnection)'
+              namespace: '$(namespace)'
+              manifests: 'manifests/deployment.yml'
+              containers: '$(acrLoginServer)/$(imageName):$(imageTag)'
+              imagePullSecrets: 'dev-acr'
+            continueOnError: true
 
-    - task: KubernetesManifest@1
-      displayName: 'Deploy Service YAML'
-      inputs:
-        kubernetesServiceConnection: '$(kubernetesServiceConnection)'
-        namespace: '$(namespace)'
-        manifests: 'manifests/service.yml'
-        containers: '$(acrLoginServer)/$(imageName):$(imageTag)'
-        imagePullSecrets: 'dev-acr'
-      continueOnError: true
+          - task: KubernetesManifest@1
+            displayName: 'Deploy Service YAML'
+            inputs:
+              kubernetesServiceConnection: '$(kubernetesServiceConnection)'
+              namespace: '$(namespace)'
+              manifests: 'manifests/service.yml'
+              containers: '$(acrLoginServer)/$(imageName):$(imageTag)'
+              imagePullSecrets: 'dev-acr'
+            continueOnError: true
 
